@@ -48,20 +48,22 @@
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-osThreadId interactiveTaskHandle;
+osThreadId testTaskHandle;
 osThreadId armTaskHandle;
 osThreadId conveyorTaskHandle;
 osThreadId detectTaskHandle;
+osThreadId interactiveTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
 /* USER CODE END FunctionPrototypes */
 
-void interactive_task(void const * argument);
+void test_task(void const * argument);
 void arm_task(void const * argument);
 void conveyor_task(void const * argument);
 void detect_task(void const * argument);
+void interactive_task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -108,9 +110,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* definition and creation of interactiveTask */
-  osThreadDef(interactiveTask, interactive_task, osPriorityNormal, 0, 128);
-  interactiveTaskHandle = osThreadCreate(osThread(interactiveTask), NULL);
+  /* definition and creation of testTask */
+  osThreadDef(testTask, test_task, osPriorityNormal, 0, 128);
+  testTaskHandle = osThreadCreate(osThread(testTask), NULL);
 
   /* definition and creation of armTask */
   osThreadDef(armTask, arm_task, osPriorityIdle, 0, 512);
@@ -124,28 +126,32 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(detectTask, detect_task, osPriorityIdle, 0, 128);
   detectTaskHandle = osThreadCreate(osThread(detectTask), NULL);
 
+  /* definition and creation of interactiveTask */
+  osThreadDef(interactiveTask, interactive_task, osPriorityIdle, 0, 128);
+  interactiveTaskHandle = osThreadCreate(osThread(interactiveTask), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
 }
 
-/* USER CODE BEGIN Header_interactive_task */
+/* USER CODE BEGIN Header_test_task */
 /**
-  * @brief  Function implementing the interactiveTask thread.
+  * @brief  Function implementing the testTask thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_interactive_task */
-__weak void interactive_task(void const * argument)
+/* USER CODE END Header_test_task */
+__weak void test_task(void const * argument)
 {
-  /* USER CODE BEGIN interactive_task */
+  /* USER CODE BEGIN test_task */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END interactive_task */
+  /* USER CODE END test_task */
 }
 
 /* USER CODE BEGIN Header_arm_task */
@@ -200,6 +206,24 @@ __weak void detect_task(void const * argument)
     osDelay(1);
   }
   /* USER CODE END detect_task */
+}
+
+/* USER CODE BEGIN Header_interactive_task */
+/**
+* @brief Function implementing the interactiveTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_interactive_task */
+__weak void interactive_task(void const * argument)
+{
+  /* USER CODE BEGIN interactive_task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END interactive_task */
 }
 
 /* Private application code --------------------------------------------------*/

@@ -16,36 +16,14 @@
 #include "OLED.h"
 
 
+/*
+交互任务：实现机械臂主要数据的显示，以及急停按钮的控制
 
 
+*/
 
 
-/**
-  * @brief          交互任务初始化
-  * @param[out]      interactive_data_init: 空
-  * @retval         none
-  */
-static void interactive_init(interactive_data_t *interactive_data_init);
-
-
-
-
-/**
-  * @brief          交互任务数据更新
-  * @param[out]      interactive_data_updata: 空
-  * @retval         none
-  */
-static void interactive_feedback_update(interactive_data_t *interactive_data_updata);
-
-
-
-/**
-  * @brief          在OLED屏上显示信息
-  * @param[out]      interactive_data_updata: 空
-  * @retval         none
-  */
-static void interactive_display(interactive_data_t *interactive_data_display);
-
+extern conveyor_control_t conveyor_control;
 
 
 
@@ -54,7 +32,11 @@ interactive_data_t interactive_data;
 
 
 
-
+/**
+  * @brief          交互任务，间隔 INTERACTIVE_CONTROL_TIME_MS 2ms
+  * @param[in]      pvParameters: 空
+  * @retval         none
+  */
 void interactive_task()
 {
     //空闲一段时间
@@ -79,11 +61,11 @@ void interactive_task()
   * @param[out]      interactive_data_init: 空
   * @retval         none
   */
-static void interactive_init(interactive_data_t *interactive_data_init)
+static void interactive_init(interactive_data_t *init)
 {
     OLED_init();     
 
-    interactive_feedback_update(interactive_data_init);
+    interactive_feedback_update(init);
 }
 
 
@@ -93,14 +75,14 @@ static void interactive_init(interactive_data_t *interactive_data_init)
   * @param[out]      interactive_data_updata: 空
   * @retval         none
   */
-static void interactive_feedback_update(interactive_data_t *interactive_data_updata)
+static void interactive_feedback_update(interactive_data_t *feedback_update)
 {
-    interactive_data_updata->stop_switch = HAL_GPIO_ReadPin(switch_stop_GPIO_Port, switch_stop_Pin);
+    feedback_update->stop_switch = HAL_GPIO_ReadPin(switch_stop_GPIO_Port, switch_stop_Pin);
 
-    interactive_data_updata->oled_display.light_sensor = !HAL_GPIO_ReadPin(light_sensor_GPIO_Port, light_sensor_Pin);
+    feedback_update->oled_display.light_sensor = conveyor_control.light_sensor;
     //电池电压还没测,模式没写，暂时写死
-    interactive_data_updata->oled_display.battery_vltage = 24.0f;
-    interactive_data_updata->oled_display.arm_behaviour = 1;
+    feedback_update->oled_display.battery_vltage = 24.0f;
+    feedback_update->oled_display.arm_behaviour = 1;
 
 }
 
@@ -111,7 +93,7 @@ static void interactive_feedback_update(interactive_data_t *interactive_data_upd
   * @param[out]      interactive_data_updata: 空
   * @retval         none
   */
-static void interactive_display(interactive_data_t *interactive_data_display)
+static void interactive_display(interactive_data_t *display)
 {
     // OLED_show_string(1, 1, "stop_switch");
     // OLED_printf(2, 1, "%d", interactive_data_display->stop_switch);

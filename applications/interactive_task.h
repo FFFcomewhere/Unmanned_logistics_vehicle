@@ -37,11 +37,39 @@ typedef struct
 
 
 /**
-  * @brief          底盘任务，间隔 CHASSIS_CONTROL_TIME_MS 2ms
+  * @brief          交互任务，间隔 INTERACTIVE_CONTROL_TIME_MS 2ms
   * @param[in]      pvParameters: 空
   * @retval         none
   */
-extern void interactive_task(); 
+void interactive_task(); 
+
+
+/**
+  * @brief          交互任务初始化
+  * @param[out]      interactive_data_init: 空
+  * @retval         none
+  */
+static void interactive_init(interactive_data_t *init);
+
+
+
+
+/**
+  * @brief          交互任务数据更新
+  * @param[out]      interactive_data_updata: 空
+  * @retval         none
+  */
+static void interactive_feedback_update(interactive_data_t *feedback_update);
+
+
+
+/**
+  * @brief          在OLED屏上显示信息
+  * @param[out]      interactive_data_updata: 空
+  * @retval         none
+  */
+static void interactive_display(interactive_data_t *display);
+
 
 
 
